@@ -51,8 +51,21 @@ def data_extraction(data_file, parameter_file, output_file):
     gsp(data, data_mis, sdc_value, output_file)
 
 def init_pass(data, M):
-    print("Init-pass in progress......")
-    return 0
+    count = {}
+    for sequence in data:
+        for item in sequence:
+            if item not in count:
+                count[item] = 1
+            else:
+                count[item] += 1
+    print(count)
+    l = []
+    for element in M:
+        item, mis_value = element
+        if (item in count) and (count[item]/len(data) >= mis_value):
+            l.append([item])
+    #print(l)
+    return l
 
 
 def gsp(data, data_mis, sdc_value, output_file):
@@ -60,9 +73,14 @@ def gsp(data, data_mis, sdc_value, output_file):
     # print("Data : ", data)
     # print("MIS Data : ", data_mis)
     # print("SDC : ", sdc_value)
+
+    # M <- sort(I, MS)
     M =  sorted(data_mis.items(), key = lambda x : x[1])
     print("Sorted keys according to the MIS values : ", M)
+
+    # L <- init-pass(M, S)
     L = init_pass(data, M)
+    print("List after initial pass : ", L)
 
 
 if __name__ == "__main__":
