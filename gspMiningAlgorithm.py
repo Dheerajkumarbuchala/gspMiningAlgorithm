@@ -36,7 +36,7 @@ def read_parameter_file(parameter_file):
                 sdc[j] = float(sdc[j])
             
             print("SDC after transformation : ", sdc)
-            
+
     return mis_values_dict, sdc
 
 
@@ -47,6 +47,23 @@ def data_extraction(data_file, parameter_file, output_file):
     data_mis , sdc_value = read_parameter_file(parameter_file)
     print("MIS Values : ", data_mis)
     print("SDC Value : ", sdc_value)
+
+    gsp(data, data_mis, sdc_value, output_file)
+
+def init_pass(data, M):
+    print("Init-pass in progress......")
+    return 0
+
+
+def gsp(data, data_mis, sdc_value, output_file):
+    # Checking the recieved Data.
+    # print("Data : ", data)
+    # print("MIS Data : ", data_mis)
+    # print("SDC : ", sdc_value)
+    M =  sorted(data_mis.items(), key = lambda x : x[1])
+    print("Sorted keys according to the MIS values : ", M)
+    L = init_pass(data, M)
+
 
 if __name__ == "__main__":
 
