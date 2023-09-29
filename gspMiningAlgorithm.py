@@ -74,6 +74,9 @@ def gsp(data, data_mis, sdc_value, output_file):
     # print("MIS Data : ", data_mis)
     # print("SDC : ", sdc_value)
 
+    n = len(data)
+    print("Length of the data : ", n)
+
     # M <- sort(I, MS)
     M =  sorted(data_mis.items(), key = lambda x : x[1])
     print("Sorted keys according to the MIS values : ", M)
@@ -81,6 +84,10 @@ def gsp(data, data_mis, sdc_value, output_file):
     # L <- init-pass(M, S)
     L = init_pass(data, M)
     print("List after initial pass : ", L)
+
+    # F1
+    f1 = [[item] for item in M if [item] in L]
+    print("F-1 : ", f1)
 
 
 if __name__ == "__main__":
