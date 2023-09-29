@@ -50,7 +50,7 @@ def data_extraction(data_file, parameter_file, output_file):
 
     gsp(data, data_mis, sdc_value, output_file)
 
-def init_pass(data, M):
+def init_pass(data, M, MIS):
     count = {}
     for sequence in data:
         for item in sequence:
@@ -58,14 +58,30 @@ def init_pass(data, M):
                 count[item] = 1
             else:
                 count[item] += 1
-    print(count)
-    l = []
-    for element in M:
-        item, mis_value = element
-        if (item in count) and (count[item]/len(data) >= mis_value):
-            l.append([item])
-    #print(l)
-    return l
+    print("Init pass count: ",count)
+   
+    master_data = {}
+    M1 = list(map(lambda itemset: itemset[0], M))
+    print("Init Pass Items: ", M1)
+    master_MIS = MIS[M1[0]]
+    print(M1)
+    l = [M1[0]]
+    for m in M1[1:]:
+        try:
+            if(count[m]/len(data) >= master_MIS):
+                l.append(m)
+        except:
+            pass
+    return l, count
+
+def level2CandGen(L):
+    pairs = []
+    for idx1 in range(len(L)):
+        for idx2 in range(idx1+1, len(L)):
+                pairs.append([L[idx1], L[idx2]])
+
+    return pairs
+
 
 
 def gsp(data, data_mis, sdc_value, output_file):
@@ -82,12 +98,31 @@ def gsp(data, data_mis, sdc_value, output_file):
     print("Sorted keys according to the MIS values : ", M)
 
     # L <- init-pass(M, S)
-    L = init_pass(data, M)
+    L, count = init_pass(data, M, data_mis)
     print("List after initial pass : ", L)
 
     # F1
-    f1 = [[item] for item in M if [item] in L]
+    f1 = []
+    for item in L:
+        print(f"item: {item} count: {count[item]} ratio:{count[item]/n} mis:{data_mis[item]}")
+        if(count[item]/n >= data_mis[item]):
+            f1.append(item)
     print("F-1 : ", f1)
+
+    F = [f1]
+    k = 2
+    Ck = None
+    #Main Loop
+    while(len(F[k-2])>0):
+        if(k==2):
+            #Level 2 Candidate Generation
+            Ck = level2CandGen(L)
+        else:
+            #MS Candidate Generation
+            pass
+
+
+        k+=1
 
 
 if __name__ == "__main__":
