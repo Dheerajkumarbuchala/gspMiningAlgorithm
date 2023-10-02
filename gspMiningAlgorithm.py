@@ -99,7 +99,88 @@ def find_min_mis_idx(C, MIS):
             min_idx = i
     
     return min_idx
-        
+
+def extractFirstElement(s1):
+    first = 0
+    if(type(s1[0]) is int):
+        first = s1[0]
+    else:
+        first = s1[0][0]
+    return first
+
+def check_mis_validity(s1, felement, data_mis):
+    list_of_items = list()
+    temp = []
+    for i in s1:
+        if type(i) is int:
+            list_of_items.append(i)
+        else:
+            for j in i:
+                list_of_items.append(j)
+    list_of_items.remove(felement)
+    for i in list_of_items:
+        temp.append(data_mis[i])
+    return min(temp)
+
+def removeSecondElement(s):
+    if(type(s[0]) is int):
+        s.pop(1)
+    else:
+        if(len(s[0]) >= 2):
+            s[0].pop(1)
+        else:
+            s[1].pop(0)
+    return s
+
+def removeLastElement(s):
+    if(type(s[-1]) is int):
+        lastElement = s.pop()
+    else:
+        if(len(s[-1]) == 1):
+            lastElement = s.pop()
+        else:
+            lastElement = s[-1].pop()
+    return s, lastElement
+
+def getSize(s):
+    return len(s)
+
+def getLength(s):
+    count = 0
+    if(s[0] is int):
+        count = len(s)
+    else:
+        for i in s:
+            count = count + len(i)
+    return count
+
+def ms_candidate_generation(fk, data_mis):
+    # Join step
+    candidates = []
+    for i in range(len(fk)):
+        s1 = copy.deepcopy(fk[i])
+        for j in range(i+1, len(fk)):
+            s2 = copy.deepcopy(fk[j])
+
+            felement = extractFirstElement(s1)
+            res_mis = check_mis_validity(s1, felement, data_mis)
+            if (res_mis > data_mis[felement]):
+                # remove the second element in s1
+                s1_copy = copy.deep_copy(s1)
+                res1 = removeSecondElement(s1_copy)
+                # remove the last element in s2
+                s2_copy = copy.deepcopy(s2)
+                res2, lastElement = removeLastElement(s2_copy)
+
+                if((res1 == res2) and (data_mis[lastElement] > data_mis[felement])):
+                    if((s2[-1] is not int) and (len(s2[-1]) == 1)):
+                        c1 = s1 + s2[-1]
+                        candidates.append(c1)
+                        if((getSize(s1) == 2) and (getLength(s1) == 2)):
+                            pass
+                    elif():
+                        pass
+                    
 
 def gsp(data, data_mis, sdc_value, output_file):
     # Checking the recieved Data.
@@ -143,8 +224,9 @@ def gsp(data, data_mis, sdc_value, output_file):
             Ck = level2CandGen(L)
             
         else:
-            break
             #MS Candidate Generation
+            fk = copy.deepcopy(F[k-2])
+            Ck = ms_candidate_generation(fk, data_mis)
             pass
         print("Cand Gen Result: ", Ck)
         for s in data:
