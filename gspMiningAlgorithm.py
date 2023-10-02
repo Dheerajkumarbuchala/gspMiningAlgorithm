@@ -1,4 +1,5 @@
 import re
+import copy
 
 def read_data_file(data_file):
     sequences = [] # List to store the sequences
@@ -58,18 +59,17 @@ def init_pass(data, M, MIS):
                 count[item] = 1
             else:
                 count[item] += 1
-    print("Init pass count: ",count)
+    print("[DEBUG] Init pass count: ",count)
    
     master_data = {}
     M1 = list(map(lambda itemset: itemset[0], M))
-    print("Init Pass Items: ", M1)
+    print("[DEBUG] Init Pass Items: ", M1)
     master_MIS = MIS[M1[0]]
-    print(M1)
-    l = [M1[0]]
+    l = [[M1[0]]]
     for m in M1[1:]:
         try:
             if(count[m]/len(data) >= master_MIS):
-                l.append(m)
+                l.append([m])
         except:
             pass
     return l, count
@@ -78,11 +78,28 @@ def level2CandGen(L):
     pairs = []
     for idx1 in range(len(L)):
         for idx2 in range(idx1+1, len(L)):
-                pairs.append([L[idx1], L[idx2]])
+                pairs.append([L[idx1][0], L[idx2][0]])
 
     return pairs
 
+#Checks if the C is subset of S
+def isSubset(S,C):
+    result = True # Assuming its a subset
+    for c in C:
+        if(not (c in S)):
+            result = False # If the element is not preset in the S we change the value to False and break
+            break
+    return result
 
+# Find the index of the element with least MIS value
+def find_min_mis_idx(C, MIS):
+    min_idx = 0
+    for i in range(len(C)):
+        if(MIS[C[i]] < MIS[C[min_idx]]):
+            min_idx = i
+    
+    return min_idx
+        
 
 def gsp(data, data_mis, sdc_value, output_file):
     # Checking the recieved Data.
@@ -98,30 +115,68 @@ def gsp(data, data_mis, sdc_value, output_file):
     print("Sorted keys according to the MIS values : ", M)
 
     # L <- init-pass(M, S)
+    print("\n#### Start INIT PASS #######")
     L, count = init_pass(data, M, data_mis)
-    print("List after initial pass : ", L)
+    print("L: ", L)
+    print("#### End INIT PASS #######")
 
     # F1
+    print("\n#### Start F1 Calculation #######")
     f1 = []
     for item in L:
-        print(f"item: {item} count: {count[item]} ratio:{count[item]/n} mis:{data_mis[item]}")
-        if(count[item]/n >= data_mis[item]):
+
+        print(f"[DEBUG] item: {item} count: {count[item[0]]} ratio:{count[item[0]]/n} mis:{data_mis[item[0]]}")
+        if(count[item[0]]/n >= data_mis[item[0]]):
             f1.append(item)
     print("F-1 : ", f1)
-
+    print("#### End F1 Calculation #######")
     F = [f1]
     k = 2
     Ck = None
+    c_counts = {} # Dict to keep track of candidate counts
+    min_mis = {} # Dict to keep track of min mis for each candidate
     #Main Loop
     while(len(F[k-2])>0):
+        print(f"\n### Running K={k} ###")
         if(k==2):
             #Level 2 Candidate Generation
             Ck = level2CandGen(L)
+            
         else:
+            break
             #MS Candidate Generation
             pass
+        print("Cand Gen Result: ", Ck)
+        for s in data:
+            for c in Ck:
+                # Check is C is subset of S
+                if(not (tuple(c) in c_counts.keys())):
+                        c_counts[tuple(c)] = 0 #If candidate not found, intialize
+                if(isSubset(s,c)):
+                    c_counts[tuple(c)] += 1
+                
+                # Check is C(removed minMISItem) is a subset of S
+                # print("[DEBUG] c: ",c)
+                min_idx = find_min_mis_idx(c, data_mis) # Gets the index of min MIS Item
+                # print("[DEBUG] min_idx: ", min_idx)
+                min_mis[tuple(c)] = data_mis[c[min_idx]]
+                # print("[DEBUG] min_mis value: ", min_mis[tuple(c)])
+                c_w = copy.deepcopy(c) #C without min mis element
+                c_w.pop(min_idx) # Remove the item form the list
+                if(isSubset(s, c_w)):
+                    if(not (tuple(c_w) in c_counts.keys())):
+                        c_counts[tuple(c_w)] = 0 #If candidate not found, intialize
+                    c_counts[tuple(c_w)] += 1
+                
+        print("[DEBUG] c_counts: ", c_counts)
+        print("[DEBUG] min_mis: ", min_mis)
 
-
+        #Create new entry for F for current K value
+        F.append([])
+        for c in Ck:
+            if(c_counts[tuple(c)]/n >= min_mis[tuple(c)]):
+                F[k-1].append(tuple(c))
+        
         k+=1
 
 
