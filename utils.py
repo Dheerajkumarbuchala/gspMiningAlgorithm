@@ -71,7 +71,7 @@ def displayCounts(F, count, k):
 
 def writeResultToFile(F, count, k, writeMode):
     print(f"Writing output into file for k={k}")
-    with open("output.txt", writeMode) as f:
+    with open("output_data/large-data-2/output22.txt", writeMode) as f:
         f.write("**************************************\n")
         f.write(f"{k}-sequences:\n\n")
         for seq in F:
