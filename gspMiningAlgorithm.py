@@ -64,6 +64,7 @@ def init_pass(data, M, MIS):
     master_data = {}
     M1 = list(map(lambda itemset: itemset[0], M))
     print("[DEBUG] Init Pass Items: ", M1)
+    print("Length of Data: ", len(data))
     master_MIS = MIS[M1[0]]
     l = [[M1[0]]]
     for m in M1[1:]:
@@ -166,7 +167,7 @@ def ms_candidate_generation(fk, data_mis):
             res_mis = check_mis_validity(s1, felement, data_mis)
             if (res_mis > data_mis[felement]):
                 # remove the second element in s1
-                s1_copy = copy.deep_copy(s1)
+                s1_copy = copy.deepcopy(s1)
                 res1 = removeSecondElement(s1_copy)
                 # remove the last element in s2
                 s2_copy = copy.deepcopy(s2)
@@ -180,11 +181,12 @@ def ms_candidate_generation(fk, data_mis):
                             pass
                     elif():
                         pass
+    return []
                     
 
 def gsp(data, data_mis, sdc_value, output_file):
     # Checking the recieved Data.
-    # print("Data : ", data)
+    print("Data : ", data)
     # print("MIS Data : ", data_mis)
     # print("SDC : ", sdc_value)
 
