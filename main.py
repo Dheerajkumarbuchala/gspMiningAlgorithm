@@ -1,5 +1,5 @@
 from utils import getDataFromFile, isCandidateSubsequence, displayCounts, writeResultToFile
-from generators import level2CandGen, MSCandGen, MS_Candidate_gen_SPM
+from generators import level2CandGen, MSCandGen
 import copy
 
 DISPLAY_CONSOLE_OUTPUT = False
@@ -58,7 +58,7 @@ def MSGSP(S, MS, SDC):
 
         else:
             #MS Candidate Generation Function
-            Ck = MS_Candidate_gen_SPM(F[k-1], count, SDC, MS, n)
+            Ck = MSCandGen(F[k-1], count, SDC, MS, n)
         
         for s in S.values():
             for c in Ck:
@@ -67,7 +67,6 @@ def MSGSP(S, MS, SDC):
                         count[key]=0
                 if(isCandidateSubsequence(c,s)):
                     count[key]+=1
-        # print(f"Count after k={k}:", count)
         
         F[k] = []
         for c in Ck:

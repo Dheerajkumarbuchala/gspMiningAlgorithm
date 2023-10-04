@@ -3,7 +3,7 @@ import copy
 def getDataFromFile(dataFilePath, misFilePath):
     sequences = {}
     MIS = {}
-    SDC = None;
+    SDC = None
     #Extracting sequences from the data file
     with open(dataFilePath) as dataFile:
         rawFileData = dataFile.read()
