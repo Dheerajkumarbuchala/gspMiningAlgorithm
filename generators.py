@@ -19,22 +19,8 @@ def level2CandGen(L, MS, count, SDC, n):
                     C.append([[item1], [item2]])
     return C
 
-def MSCandGen(F, MS, SDC, count, n):
-    # Join Step
-    for s1 in F:
-        for s2 in F:
-            if(firstItemValid(s1, MS)):
-                firstItemJoin(s1, s2, MS)
-            #If
-            #ElseIf
-            #Else
-            break
 
-    #Pruning 
-    return []
-
-# Line 7 - MS_Candidate-gen-SPM function
-def MS_Candidate_gen_SPM(F,Count_L,SDC,MS,n):
+def MSCandGen(F,Count_L,SDC,MS,n):
     count = Count_L
     C=[]   
     for s1 in F:
@@ -52,9 +38,6 @@ def MS_Candidate_gen_SPM(F,Count_L,SDC,MS,n):
                 duplicateIdx.append(i)
     for i in duplicateIdx:
         C.pop(i)               
-    # for k in C:
-    #     if not prune(k,MS,F):
-    #         C.remove(k)
     C = pruneCandidates(C, MS, F)
     return C
 
