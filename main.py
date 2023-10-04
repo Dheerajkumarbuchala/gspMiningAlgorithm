@@ -91,6 +91,6 @@ def MSGSP(S, MS, SDC):
     
 
 if __name__ == "__main__":
-    sequences, MIS, SDC = getDataFromFile("data/data-1.txt", "data/para1-1.txt")
+    sequences, MIS, SDC = getDataFromFile("test-data/small-data-1/data-1.txt", "test-data/small-data-1/para1-1.txt")
     MSGSP(sequences, MIS, SDC)
     print("Done")

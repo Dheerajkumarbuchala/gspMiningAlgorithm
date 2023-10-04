@@ -78,29 +78,38 @@ def lastItemJoin(s1, s2, MS, count, SDC, n):
     C = []
     flatS1=flatten(s1)
     flatS2=flatten(s2)
-    if flatS1 == flatS2 and abs(float(count[f"[{flatS1[0]}]"]/n)-float((count[f"[{flatS2[-2]}]"]/n))) <= SDC and MS[flatS2[-1]] < MS[flatS1[0]] :
+    firstS1 = flatS1[0]
+    firstS2 = flatS2[0]
+    firstS1MIS = MS[firstS1]
+    lastS2MIS = MS[flatS2[-1]]
+    popped = flatS1.pop(0)
+    secondLastS2=flatS2.pop(-2)
+    if flatS1 == flatS2 and abs(float(count[f"[{popped}]"]/n)-float((count[f"[{secondLastS2}]"]/n))) <= SDC and lastS2MIS < firstS1MIS :
         if type(s1[0]) is list and len(s1[0]) == 1:
-            if type(s2[0]) is int: 
-                C.append([copy.deepcopy(s1[0]), copy.deepcopy(s2)])                                     
-            else:
-                c1=[copy.deepcopy(s1[0])]+copy.deepcopy(s2)
-                C.append(c1)                  
-            if seqLength(s2)==2 and seqSize(s2)==2 and flatS1[0]<flatS2[0]:
-                if(type(s1[0]) is list):
+                if type(s2[0]) is int: 
+                    c1=[copy.deepcopy(s1[0]), copy.deepcopy(s2)]
+                    C.append(c1)                                     
+                else:
+                    c1 = copy.deepcopy(s2)
+                    c1.insert(0, copy.deepcopy(s1[0]))
+                    C.append(c1)                  
+                if seqLength(s2)==2 and seqSize(s2)==2 and firstS1<firstS2:
                     c1=copy.deepcopy(s2)
-                    c1[0].insert(0,s1[0][0])
+                    c1[0].insert(0,copy.deepcopy(s1[0][0]))
                     C.append(c1)             
-        elif (seqLength(s2) == 2 and seqSize(s2) == 1 and flatS1[0]<flatS2[0]) or seqLength(s2)>2:
+        elif (seqLength(s2) == 2 and seqSize(s2) == 1 and firstS1<firstS2) or seqLength(s2)>2:
             if type(s2[0]) is int:
-                c2=copy.deepcopy(s2)
-                c2.insert(0,s1[0])
-                C.append(c2)                
+                c1=copy.deepcopy(s2)
+                c1.insert(0,copy.deepcopy(s1[0]))
+                C.append(c1)                
             else:
-                item = flatS1[0]                    
-                c2=copy.deepcopy(s2)
-                c2[0].insert(0,item)
-                C.append(c2)
+                item = copy.deepcopy(s1[0][0]) if type(s1[0]) is list else copy.deepcopy(s1[0])                 
+                c1=copy.deepcopy(s2)
+                c1[0].insert(0,item)
+                C.append(c1)
     return C
+
+
 
 
 def GSPJoinStep(s1, s2, MS, count, SDC, n):

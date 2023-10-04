@@ -31,13 +31,14 @@ def MSCandGen(F,Count_L,SDC,MS,n):
                 C.extend(lastItemJoin(s1, s2, MS, count, SDC, n))
             else:
                 C.extend(GSPJoinStep(s1, s2, MS, count, SDC, n))  
-    duplicateIdx=[]
+    duplicates=[]
     for i in range(0, len(C)-1):
         for j in range(i+1, len(C)-2):
             if C[i] == C[j]:
-                duplicateIdx.append(i)
-    for i in duplicateIdx:
-        C.pop(i)               
+                duplicates.append(C[i])
+    for i in duplicates:
+        C.remove(i)
+                    
     C = pruneCandidates(C, MS, F)
     return C
 
