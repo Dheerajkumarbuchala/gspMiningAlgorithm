@@ -68,4 +68,23 @@ def displayCounts(F, count, k):
         print(f"{f} = {count[str(f)]}")
 
     print(f"Total Count: {len(F)}")
+
+def writeResultToFile(F, count, k, writeMode):
+    print(f"Writing output into file for k={k}")
+    with open("output.txt", writeMode) as f:
+        f.write("**************************************\n")
+        f.write(f"{k}-sequences:\n\n")
+        for seq in F:
+            f.write("<")
+            if(type(seq[0]) is int):
+                seq = [seq]
+            seqStr = str(seq)
+            seqStr = seqStr.replace(' ','')
+            seqStr = seqStr[1:-1]
+            seqStr = seqStr.replace('[', '{')
+            seqStr = seqStr.replace(']', '}')
+            f.write(seqStr)
+            f.write(">\n")
+        f.write(f"\nThe count is: {len(F)}\n")
+
     
